@@ -1,15 +1,13 @@
-import { useState } from "react";
-import "./App.css";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-function App() {
-  const [products, setProducts] = useState([]);
+const App = () => {
+  const [users, setUsers] = useState([]);
 
   const fetchData = async () => {
     try {
       const response = await fetch("http://localhost:5000/users");
       const data = await response.json();
-      setProducts(data);
+      setUsers(data);
     } catch (error) {
       console.log(error);
     }
@@ -18,40 +16,28 @@ function App() {
   useEffect(() => {
     fetchData();
   }, []);
-
-  const handleSub = (e) => {
-    e.preventDefault();
-    const form = e.target;
-    const name = form.name.value;
-    const email = form.email.value;
-    const user = { name, email };
-    fetch("http://localhost:5000/users", {
-      method: "POST",
-      headers: {
-        "content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setProducts([...products, data]);
-      });
-  };
+  console.log(users);
 
   return (
-    <div className="text-3xl flex justify-center">
-      <form onSubmit={handleSub}>
-        <div className="flex flex-col w-[100%] gap-y-5 pt-10">
-          <input className="border" type="text" name="name" id="" />
-          <input className="border" type="email" name="email" id="" />
-          <button type="submit">Submit</button>
-        </div>
-      </form>
-      {products.map((item) => {
-        return <div key={item.id}>{item.name}</div>;
-      })}
+    <div>
+      <div className="pt-5">
+        {users.map((user) => {
+          return (
+            <div
+              className="flex justify-center py-2 items-center"
+              key={user._id}
+            >
+              <div className="flex gap-x-8 border justify-center w-[20%] items-center">
+                <h3>{user.name}</h3>
+                <p>{user.age}</p>
+                <p>{user.occupation}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
-}
+};
 
 export default App;
