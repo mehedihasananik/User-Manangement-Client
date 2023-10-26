@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 const App = () => {
   const [users, setUsers] = useState([]);
+  const [user, setUser] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -19,6 +20,20 @@ const App = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const user = { name, email };
+
+    fetch("http://localhost:5000/users", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(user),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setUsers([...users, data]);
+      });
   };
 
   return (
@@ -28,14 +43,14 @@ const App = () => {
           <input
             className="border px-2 py-1 capitalize "
             type="text"
-            name=""
+            name="name"
             id=""
             placeholder="name"
           />
           <input
             className="border px-2 py-1 capitalize "
             type="email"
-            name=""
+            name="email"
             id=""
             placeholder="email"
           />
@@ -61,6 +76,7 @@ const App = () => {
                 <h3>{user.name}</h3>
                 <p>{user.age}</p>
                 <p>{user.occupation}</p>
+                <p>{user?.email}</p>
               </div>
             </div>
           );
